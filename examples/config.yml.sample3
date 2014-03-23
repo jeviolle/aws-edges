@@ -1,0 +1,29 @@
+---
+  name: "example"
+  rotate: True
+  save_as: "png"
+  sources: 
+    - "vpc"
+    - "ec2"
+    - "subnet"
+  cluster: 
+    label: "Virtual Private Clouds"
+    edges: 
+      - 
+        to: "vpc_cidr_block"
+        from: "vpc_vpc_id"
+    cluster: 
+      label: "Subnets"
+      edges: 
+        - 
+          to: "subnet_cidr_block"
+          from: "subnet_subnet_id"
+      cluster:
+        label: "EC2 Instances"
+        edges: 
+          - 
+            from: "ec2_instance_id"
+            to: "ec2_subnet_id"
+          -
+            from: "ec2_subnet_id"
+            to: "ec2_vpc_id"

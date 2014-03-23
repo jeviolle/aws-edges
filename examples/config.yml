@@ -1,0 +1,11 @@
+---
+  name: "my graph name"
+  sources: 
+    - "ec2"
+  edges: 
+    -
+      from: "ec2_instance_id"
+      to: "ec2_security_groups-group_name"
+    -
+      from: "ec2_vpc_id"
+      to: "ec2_instance_id"

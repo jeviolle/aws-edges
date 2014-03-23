@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+#
+
+$LOAD_PATH.push(File.absolute_path(File.dirname(__FILE__)) + '/../lib')
+
+require 'aws-sdk'
+require 'aws-edges'
+require 'optparse'
+require 'pp'
+
+options = {}
+OptionParser.new do |opts|
+  opts.on('-c','--config [CONFIG_FILE]', 'Config file') do |v|
+    options[:config] = v
+  end
+  opts.on('-f','--config-format [yaml|json]', 'Config file format (yaml or json)') do |v|
+    options[:fmt] = v
+  end
+  opts.on('-a','--access-key-id [ACCESS_KEY_ID]', 'AWS Access Key ID') do |v|
+    options[:access_key_id] = v
+  end
+  opts.on('-s','--secret-key-id [SECRET_ACCESS_KEY]', 'AWS Secret Access Key') do |v|
+    options[:secret_access_key] = v
+  end
+  opts.on('-r','--region [REGION]', 'AWS Region (ie: us-east-1)') do |v|
+    options[:region] = v
+  end
+  opts.on('-?','--help','Shows this message') do 
+    puts opts
+    exit 255
+  end
+end.parse!
+
+unless options[:access_key_id] and options[:secret_access_key] and options[:region] and options[:config] and options[:fmt]
+  puts "[ERROR] Missing required option"
+  exit 1
+end
+
+AWS.config({
+  :access_key_id => options[:access_key_id],
+  :secret_access_key => options[:secret_access_key],
+  :region => options[:region]
+})
+
+# parse config
+config = AWSEdges::Config.new
+config_data = config.parse(options[:fmt],options[:config])
+
+aws_sources = config_data.delete('sources')
+aws_data = {
+  :vpc => {}, :subnet => {}, :ec2 => {},
+  :rds => {}, :redshift => {}
+}
+# run aws clients to describe and retrieve data
+aws_data[:vpc] = AWSEdges::VPC.new(AWS::EC2::Client.new.describe_vpcs.data).nodes if aws_sources.include?("vpc")
+aws_data[:subnet] = AWSEdges::Subnet.new(AWS::EC2::Client.new.describe_subnets.data).nodes if aws_sources.include?("subnet")
+aws_data[:ec2] = AWSEdges::EC2.new(AWS::EC2::Client.new.describe_instances.data).nodes if aws_sources.include?("ec2")
+aws_data[:rds] = AWSEdges::RDS.new(AWS::RDS::Client.new.describe_db_instances.data).nodes if aws_sources.include?("rds")
+aws_data[:redshift] = AWSEdges::Redshift.new(AWS::Redshift::Client.new.describe_clusters.data).nodes if aws_sources.include?("redshift")
+
+# graph a graph based on the config and inputs
+grapher = AWSEdges::Graph.new(config_data, aws_data)
+grapher.create_graph()
