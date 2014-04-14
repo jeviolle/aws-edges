@@ -12,4 +12,6 @@ Gem::Specification.new 'aws-edges', AWSEdges::VERSION do |s|
   s.homepage  = 'http://github.com/jeviolle/aws-edges'
   s.add_runtime_dependency 'aws-sdk', '~> 1.34', '>=1.34.0'
   s.add_runtime_dependency 'graph', '~> 2.6', '>=2.6.0'
+  s.bindir = 'bin'
+  s.executables << 'aws-edges'
 end

@@ -32,7 +32,7 @@ OptionParser.new do |opts|
 end.parse!
 
 unless options[:access_key_id] and options[:secret_access_key] and options[:region] and options[:config] and options[:fmt]
-  puts "[ERROR] Missing required option"
+  puts "[ERROR] Missing required option, please run with '--help' for more info"
   exit 1
 end
 
