@@ -15,6 +15,9 @@ module AWSEdges
       exit 1
     end
 
+    ##
+    # Validate the source section of the config file
+    #
     def validate_sources(sources)
       msg_and_exit("No sources specified in the config") if sources.nil?
       sources.each do |source|
@@ -24,10 +27,16 @@ module AWSEdges
       end
     end
 
+    ##
+    # Verify that a graph name is specified in the config
+    #
     def validate_name(graph_name)
       msg_and_exit("No graph name specified in the config") if graph_name.nil?
     end
 
+    ##
+    # Confirm that from and to edges are specified properly and are 
+    # not a many-to-many relationship
     def validate_nodes(hashed_data)
       nodes = []
       hashed_data.each do |k,v|
@@ -49,6 +58,8 @@ module AWSEdges
       end
     end
 
+    ##
+    # Validate that the 'keys' are valid in the config
     def validate_keys(hashed_data)
       keys = []
       hashed_data.each do |k,v|
@@ -68,6 +79,9 @@ module AWSEdges
       end
     end
 
+    ##
+    # Attempt to parse the json/yaml config and run through
+    # validation
     def parse(file_type,config_file)
       begin
       case file_type

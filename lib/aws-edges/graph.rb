@@ -17,6 +17,9 @@ module AWSEdges
       @aws = aws_data
     end
 
+    ##
+    # Generate the graphviz digraph statement for edges
+    #
     def map_edges(from, to)
       cmd_string = ""  
       from_prefix, from_node = $1, $2 if from =~ /^(\w+?)_(.+)/
@@ -45,6 +48,9 @@ module AWSEdges
       cmd_string
     end
 
+    ##
+    # Dynamically create graphviz digraph statements
+    # based on the config file input
     def generate_graph_statements(config)
       cmd_string = ""
       config.each do |key,value|
@@ -62,6 +68,9 @@ module AWSEdges
       cmd_string
     end
 
+    ##
+    # Main method for creating graphviz digraphs from the
+    # parsed config file
     def create_graph()
       ##
       # default to png output format
