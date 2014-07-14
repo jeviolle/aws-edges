@@ -13,7 +13,7 @@ $ gem install aws-edges
 ## Usage
 
 ```
-$ aws-edges --help
+$ ./aws-edges -h
 Usage: aws-edges [options]
     -c, --config [CONFIG_FILE]       Config file
     -f, --config-format [yaml|json]  Config file format (yaml or json)
@@ -22,6 +22,7 @@ Usage: aws-edges [options]
     -s [SECRET_ACCESS_KEY],          AWS Secret Access Key
         --secret-key-id
     -r, --region [REGION]            AWS Region (ie: us-east-1)
+    -C, --list-colors                Prints out a list of supported colors
     -?, --help                       Shows this message
 ```
 
@@ -45,6 +46,7 @@ The syntax for mapping a 'many' node is '"redshift_cluster_nodes-private_ip_addr
     - 
       from: "subnet_vpc_id"
       to: "subnet_subnet_id"
+      to_color: "brown"
     -
       from: "ec2_subnet_id"
       to: "ec2_private_ip_address"
@@ -52,12 +54,33 @@ The syntax for mapping a 'many' node is '"redshift_cluster_nodes-private_ip_addr
       from: "ec2_private_ip_address"
       to: "ec2_instance_id"
     -
+      from_color: "orange"
       from: "ec2_instance_id"
       to: "ec2_availability_zone"
     -
       from: "subnet_cidr_block"
       to: "subnet_subnet_id"
 ```
+
+### Adding edge colors
+
+In order to make it easier to identify groups of like edges, coloring (fill) support has been added. Being that this utilizes the `graph` gem it supports all of the colors supported by it. 
+
+[Visit Graphviz Colors to see what they look like](http://www.graphviz.org/content/color-names)
+
+To see what colors are available run the following command:
+
+```
+$ aws-edges -C
+```
+
+or
+
+```
+$ aws-edges --list-colors
+```
+
+To use colors, in your config simply add either `to_color: "orange"` or `from_color: "brown"` to the `edges` section of the config. (See example above)
 
 ## Hacking and Contributing
 

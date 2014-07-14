@@ -1,6 +1,8 @@
 module AWSEdges
   class Config
-    @@valid_keys = ["name", "sources", "cluster", "label", "edges", "from", "to", "rotate", "save_as"]
+    @@valid_keys = ["name", "sources", "cluster", "label", "edges", 
+                    "from", "from_shape", "from_color", 
+                    "to", "to_shape", "to_color" ,"rotate", "save_as"]
     @@valid_sources = ["VPC","EC2","RDS","Redshift","Subnet"]
     @@valid_prefixes = @@valid_sources
 
@@ -59,6 +61,32 @@ module AWSEdges
     end
 
     ##
+    # Internal method for testing a color
+    private def test_color(color)
+      colors = digraph.class::BOLD_COLORS + digraph.class::LIGHT_COLORS
+      msg_and_exit("Invalid color specified: #{color}") unless colors.include?(color) 
+    end
+
+    ##
+    # Verfiy that the colors defined are supported by the 
+    # underlying Graph gem
+    def validate_colors(hashed_data)
+      hashed_data.each do |k,v|
+        if k == "edges"
+          v.each{|e|
+            if e["from_color"]
+              test_color(e["from_color"])
+            end
+
+            if e["to_color"]
+              test_color(e["to_color"])
+            end
+          }
+        end
+      end
+    end
+
+    ##
     # Validate that the 'keys' are valid in the config
     def validate_keys(hashed_data)
       keys = []
@@ -98,6 +126,7 @@ module AWSEdges
 
       # run through validation checks
       validate_keys(config)
+      validate_colors(config)
       validate_sources(config['sources'])
       validate_nodes(config)
       validate_name(config['name'])
