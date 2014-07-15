@@ -30,7 +30,7 @@ Usage: aws-edges [options]
 
 There are some examples located in the 'examples' directory. Below is one of them. The *sources* section tells the *aws-edges* script what to pull from AWS. And the rest is pretty self explanatory. 
 
-The syntax for mapping a 'many' node is '"redshift_cluster_nodes-private_ip_address"'. The '-' character indicating that 'redshift_cluster_nodes' is an Array and you want the 'private_ip_address' object.
+The basic structure is show below. The `name` key provides the output name of the graph generated. Which will generate both a *.dot* and *.png* file by default. 
 
 ```
 ---
@@ -60,6 +60,48 @@ The syntax for mapping a 'many' node is '"redshift_cluster_nodes-private_ip_addr
     -
       from: "subnet_cidr_block"
       to: "subnet_subnet_id"
+```
+### Specifying output format
+
+If you like to save the graph in a different format other than the default `png`. You can specify the `save_as: "pdf"` or some other image format such as tiff. 
+
+### Mapping a 'many' node
+
+What is a 'many' node? Simply put, it is a object containing many entries or an Hash of an Array of Hashes.
+
+The syntax for mapping a 'many' node is `"redshift_cluster_nodes-private_ip_address"`. The `-` character indicating that `redshift_cluster_nodes` is an Array and you want all the `private_ip_address` objects/property.
+
+### Grouping edges
+
+Sometime you would like to visually group a set or sets of edges together so they appear in a container. This can help distinguish the relation between edge objects. You will need to group your objects using the `cluster` key and can label it using something like; `label: "My VPCs"`. Below is an example config snippet:
+
+```
+---
+  name: "example"
+  rotate: true
+  sources: 
+    - "vpc"
+  cluster: 
+    label: "Virtual Private Clouds"
+    edges: 
+      - 
+        to: "vpc_cidr_block"
+        from: "vpc_vpc_id"
+```
+
+### Changing the layout
+
+By default graphs are generated in a horizontal top down structure. If you like a vertical left to right representation you will need to set the `rotate: true` property in your config like so:
+
+```
+$ cat myconfig.yml
+---
+  name: "example"
+  rotate: true
+  sources: 
+    - "vpc"
+    - "ec2"
+    - "subnet"
 ```
 
 ### Adding edge colors
