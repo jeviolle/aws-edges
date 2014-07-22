@@ -68,7 +68,7 @@ module AWSEdges
     end
 
     ##
-    # Verfiy that the colors defined are supported by the 
+    # Verify that the colors defined are supported by the 
     # underlying Graph gem
     def validate_colors(hashed_data)
       hashed_data.each do |k,v|
@@ -80,6 +80,32 @@ module AWSEdges
 
             if e["to_color"]
               test_color(e["to_color"])
+            end
+          }
+        end
+      end
+    end
+
+    ##
+    # Internal method for testing a shape
+    private def test_shape(shape)
+      shapes = digraph.class::SHAPES
+      msg_and_exit("Invalid shape specified: #{shape}") unless shapes.include?(shape)
+    end
+
+    ##
+    # Verify that the shapes defined are supported by the 
+    # underlying Graph gem
+    def validate_shapes(hashed_data)
+      hashed_data.each do |k,v|
+        if k == "edges"
+          v.each{|e|
+            if e["from_shape"]
+              test_shape(e["from_shape"])
+            end
+
+            if e["to_shape"]
+              test_shape(e["to_shape"])
             end
           }
         end
@@ -127,6 +153,7 @@ module AWSEdges
       # run through validation checks
       validate_keys(config)
       validate_colors(config)
+      validate_shapes(config)
       validate_sources(config['sources'])
       validate_nodes(config)
       validate_name(config['name'])

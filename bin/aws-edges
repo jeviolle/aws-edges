@@ -28,6 +28,9 @@ OptionParser.new do |opts|
   opts.on('-C','--list-colors', 'Prints out a list of supported colors') do |v|
     options[:colors] = v
   end
+  opts.on('-S','--list-shapes', 'Prints out a list of supported shapes') do |v|
+    options[:shapes] = v
+  end
   opts.on('-?','--help','Shows this message') do 
     puts opts
     exit 255
@@ -40,12 +43,21 @@ class Array
   end
 end
 
-if options[:colors]
-  colors = digraph.class::BOLD_COLORS + digraph.class::LIGHT_COLORS
-  maxlen = colors.longest_word[0].length
-  puts "Supported Colors"
+def display_supported(type)
+  display_types = [] 
+
+  case type
+  when "colors"
+    display_types = digraph.class::BOLD_COLORS + digraph.class::LIGHT_COLORS
+  when "shapes"
+    display_types = digraph.class::SHAPES
+  end
+
+  maxlen = display_types.longest_word[0].length
+  puts
+  puts "Supported #{type.capitalize}"
   puts "----------------"
-  colors.each_with_index do |obj, idx|
+  display_types.each_with_index do |obj, idx|
     if idx.to_i.even?
       print obj
       (maxlen - obj.length).times{print " "}
@@ -54,6 +66,16 @@ if options[:colors]
     puts "#{obj}" if idx.to_i.odd?
   end
   puts
+end
+
+if options[:colors] and options[:shapes]
+  %w/colors shapes/.each{|i| display_supported i}
+  exit 255
+elsif options[:colors]
+  display_supported "colors"
+  exit 255
+elsif options[:shapes]
+  display_supported "shapes"
   exit 255
 end
 

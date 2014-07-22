@@ -23,6 +23,7 @@ Usage: aws-edges [options]
         --secret-key-id
     -r, --region [REGION]            AWS Region (ie: us-east-1)
     -C, --list-colors                Prints out a list of supported colors
+    -S, --list-shapes                Prints out a list of supported shapes
     -?, --help                       Shows this message
 ```
 
@@ -40,9 +41,11 @@ The basic structure is show below. The `name` key provides the output name of th
     - "subnet"
     - "vpc"
   edges: 
-    -
+    - 
+      from_shape: "egg"   
       from: "vpc_cidr_block"
       to: "vpc_vpc_id"
+      to_shape: "triangle"
     - 
       from: "subnet_vpc_id"
       to: "subnet_subnet_id"
@@ -123,6 +126,26 @@ $ aws-edges --list-colors
 ```
 
 To use colors, in your config simply add either `to_color: "orange"` or `from_color: "brown"` to the `edges` section of the config. (See example above)
+
+### Adding edges shapes
+
+In order to make it easier to identify *like* edges, shape support has been added. As with colors, it supports the shapes available to the `graph` gem on which the gem requires.
+
+[Visit Graphviz Shapes to see what the look like](http://www.graphviz.org/content/node-shapes)
+
+To list the supported shapes, run the following command:
+
+```
+$ aws-edges -S
+```
+
+or
+
+```
+$ aws-edges --list-shapes
+```
+
+To use shapes, in your config simply add either `to_shape: "triangle"` or `from_shape: "egg"` to the `edges` section of the config. (See example above)
 
 ## Hacking and Contributing
 

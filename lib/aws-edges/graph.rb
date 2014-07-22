@@ -21,7 +21,7 @@ module AWSEdges
     ##
     # Generate the graphviz digraph statement for edges
     #
-    def map_edges(from, from_color, to, to_color)
+    def map_edges(from, from_color, from_shape, to, to_color, to_shape)
       cmd_string = ""  
       from_prefix, from_node = $1, $2 if from =~ /^(\w+?)_(.+)/
       to_prefix, to_node = $1, $2 if to =~ /^(\w+?)_(.+)/
@@ -39,9 +39,21 @@ module AWSEdges
                   end
                 end
 
+                unless from_shape.nil?
+                  unless from_shape.empty?
+                    cmd_string += assign_shape_attribute(from_shape, i[:"#{child}"])
+                  end
+                end
+
                 unless to_color.nil?
                   unless to_color.empty?
                     cmd_string += assign_color_attribute(to_color, node[:"#{to_node}"]) 
+                  end
+                end
+
+                unless to_shape.nil?
+                  unless to_shape.empty?
+                    cmd_string += assign_shape_attribute(to_shape, node[:"#{to_node}"]) 
                   end
                 end
 
@@ -59,9 +71,21 @@ module AWSEdges
                   end
                 end
 
+                unless from_shape.nil?
+                  unless from_shape.empty?
+                    cmd_string += assign_shape_attribute(from_shape, node[:"#{from_node}"])
+                  end
+                end
+
                 unless to_color.nil?
                   unless to_color.empty?
                     cmd_string += assign_color_attribute(to_color, i[:"#{child}"]) 
+                  end
+                end
+
+                unless to_shape.nil?
+                  unless to_shape.empty?
+                    cmd_string += assign_shape_attribute(to_shape, i[:"#{child}"]) 
                   end
                 end
 
@@ -77,9 +101,21 @@ module AWSEdges
                 end
               end
 
+              unless from_shape.nil?
+                unless from_shape.empty?
+                  cmd_string += assign_shape_attribute(from_shape, from_node)
+                end
+              end
+
               unless to_color.nil?
                 unless to_color.empty?
                   cmd_string += assign_color_attribute(to_color, to_node) 
+                end
+              end
+
+              unless to_shape.nil?
+                unless to_shape.empty?
+                  cmd_string += assign_shape_attribute(to_shape, to_node) 
                 end
               end
 
@@ -97,9 +133,9 @@ module AWSEdges
 
     ##
     # TODO: assign shapes
-    # single eg: triangle << node("EDGE")
     # all eg: edge_attribs << triangle
-    def assign_shape_attribute()
+    def assign_shape_attribute(shape, edge)
+      return "#{shape} << node(\"#{edge}\");"
     end
 
     ##
@@ -115,7 +151,10 @@ module AWSEdges
           cmd_string += " end;"
         elsif key == "edges"
           value.each do |e|
-            cmd_string += map_edges(e['from'], e['from_color'], e['to'], e['to_color'])
+            cmd_string += map_edges(
+              e['from'], e['from_color'], e['from_shape'], 
+              e['to'], e['to_color'], e['to_shape']
+            )
           end
         end
       end
