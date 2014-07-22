@@ -36,33 +36,37 @@ The basic structure is show below. The `name` key provides the output name of th
 ```
 ---
   name: "my graph name"
+  rotate: true
   sources: 
     - "ec2"
     - "subnet"
-    - "vpc"
   edges: 
-    - 
-      from_shape: "egg"   
-      from: "vpc_cidr_block"
-      to: "vpc_vpc_id"
-      to_shape: "triangle"
-    - 
-      from: "subnet_vpc_id"
-      to: "subnet_subnet_id"
-      to_color: "brown"
     -
-      from: "ec2_subnet_id"
-      to: "ec2_private_ip_address"
+      from: "ec2_hypervisor"
+      from_color: "orange"
+      from_shape: "invhouse"
+      to: "ec2_virtualization_type"
+      to_color: "coral"
+      to_shape: "diamond"
     -
-      from: "ec2_private_ip_address"
+      from: "ec2_virtualization_type"
       to: "ec2_instance_id"
     -
-      from_color: "orange"
       from: "ec2_instance_id"
-      to: "ec2_availability_zone"
+      from_color: "dodgerblue"
+      to: "ec2_subnet_id"
+      to_color: "darkturquoise"
     -
       from: "subnet_cidr_block"
-      to: "subnet_subnet_id"
+      to: "subnet_availability_zone"
+      to_color: "crimson"
+  cluster:
+    label: "Subnet Legend"
+    edges:
+      - 
+        from: "subnet_subnet_id"
+        to: "subnet_cidr_block"
+        to_color: "firebrick"
 ```
 ### Specifying output format
 
