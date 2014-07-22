@@ -1,15 +1,34 @@
 ---
   name: "my graph name"
+  rotate: true
   sources: 
     - "ec2"
+    - "subnet"
   edges: 
     -
-      from_shape: "egg"
+      from: "ec2_hypervisor"
       from_color: "orange"
-      from: "ec2_instance_id"
-      to: "ec2_security_groups-group_name"
-      to_shape: "triangle"
-      to_color: "cyan"
+      from_shape: "invhouse"
+      to: "ec2_virtualization_type"
+      to_color: "coral"
+      to_shape: "diamond"
     -
-      from: "ec2_vpc_id"
+      from: "ec2_virtualization_type"
       to: "ec2_instance_id"
+    -
+      from: "ec2_instance_id"
+      from_color: "dodgerblue"
+      to: "ec2_subnet_id"
+      to_color: "darkturquoise"
+    -
+      from: "subnet_cidr_block"
+      to: "subnet_availability_zone"
+      to_color: "crimson"
+  cluster:
+    label: "Subnet Legend"
+    edges:
+      - 
+        from: "subnet_subnet_id"
+        to: "subnet_cidr_block"
+        to_color: "firebrick"
+

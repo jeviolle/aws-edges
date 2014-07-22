@@ -97,25 +97,25 @@ module AWSEdges
 
               unless from_color.nil?
                 unless from_color.empty?
-                  cmd_string += assign_color_attribute(from_color, from_node)
+                  cmd_string += assign_color_attribute(from_color, node[:"#{from_node}"])
                 end
               end
 
               unless from_shape.nil?
                 unless from_shape.empty?
-                  cmd_string += assign_shape_attribute(from_shape, from_node)
+                  cmd_string += assign_shape_attribute(from_shape, node[:"#{from_node}"])
                 end
               end
 
               unless to_color.nil?
                 unless to_color.empty?
-                  cmd_string += assign_color_attribute(to_color, to_node) 
+                  cmd_string += assign_color_attribute(to_color, node[:"#{to_node}"]) 
                 end
               end
 
               unless to_shape.nil?
                 unless to_shape.empty?
-                  cmd_string += assign_shape_attribute(to_shape, to_node) 
+                  cmd_string += assign_shape_attribute(to_shape, node[:"#{to_node}"]) 
                 end
               end
 
