@@ -1,8 +1,23 @@
 ---
   name: "iam_structure"
+  rotate: True
   sources:
     - "iam"
   edges:
     -
+      from_color: "lightseagreen"
+      from: "iam_user_name"
+      to_shape: "note"
+      to_color: "peru"
+      to: "iam_user_policies-policy_name"
+    -
+      from_color: "lightseagreen"
       from: "iam_users-user_name"
       to: "iam_group_name"
+    -
+      from_shape: "folder"
+      from_color: "orange"
+      from: "iam_group_name"
+      to: "iam_group_policies-policy_name"
+      to_color: "peru"
+      to_shape: "note"

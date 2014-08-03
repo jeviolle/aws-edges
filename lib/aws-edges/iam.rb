@@ -12,9 +12,11 @@ module AWSEdges
           :group_id => g[:group_id],
           :group_arn => g[:arn],
           :group_create_date => g[:create_date],
-          :users => []
+          :users => [],
+          :group_policies => []
         }) 
 
+        # get group members
         assigned_users = Array.new
         iam.get_group(options = {:group_name => g[:group_name]})[:users].each {|u|
           assigned_users.push({
@@ -26,6 +28,15 @@ module AWSEdges
           })
         }
         @nodes[@nodes.length - 1][:users] = assigned_users
+
+        # get group policies
+        assigned_policies = Array.new
+        iam.list_group_policies(options = {:group_name => g[:group_name]})[:policy_names].each {|p|
+          assigned_policies.push({
+            :policy_name => p
+          })
+        }
+        @nodes[@nodes.length - 1][:group_policies] = assigned_policies
       }
 
       # get IAM users
@@ -36,9 +47,11 @@ module AWSEdges
           :user_arn => u[:arn],
           :user_path => u[:path],
           :user_create_date => u[:create_date],
-          :groups => []
+          :groups => [],
+          :user_policies => []
         })
 
+        # get membership
         assigned_groups = Array.new
         iam.list_groups_for_user(options = {:user_name => u[:user_name]})[:groups].each {|g|
           assigned_groups.push({
@@ -50,6 +63,15 @@ module AWSEdges
           }) 
         }
         @nodes[@nodes.length - 1][:groups] = assigned_groups
+
+        # get user policies
+        assigned_policies = Array.new
+        iam.list_user_policies(options = {:user_name => u[:user_name]})[:policy_names].each {|p|
+          assigned_policies.push({
+            :policy_name => p
+          })
+        }
+        @nodes[@nodes.length - 1][:user_policies] = assigned_policies
       }
     end
 
@@ -57,9 +79,11 @@ module AWSEdges
       [ "group_path", "group_name", "group_id", "group_arn",
         "group_create_date", "users-path", "users-user_name",
         "users-user_id", "users-arn", "users-create_date",
+        "group_policies-policy_name",
         "user_path", "user_name", "user_id", "user_arn",
         "user_create_date", "groups-path", "groups-group_name",
-        "groups-group_id", "groups-arn", "groups-create_date"
+        "groups-group_id", "groups-arn", "groups-create_date",
+        "user_policies-policy_name"
       ]
     end
   end

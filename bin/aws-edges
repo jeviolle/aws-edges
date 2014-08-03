@@ -45,8 +45,12 @@ def display_supported(type)
 
   case type
   when "colors"
+    puts
+    puts "http://graphviz.org/content/color-names"
     display_types = digraph.class::BOLD_COLORS + digraph.class::LIGHT_COLORS
   when "shapes"
+    puts
+    puts "http://graphviz.org/content/node-shapes"
     display_types = digraph.class::SHAPES
   end
 
