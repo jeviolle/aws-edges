@@ -1,0 +1,8 @@
+---
+  name: "iam_structure"
+  sources:
+    - "iam"
+  edges:
+    -
+      from: "iam_users-user_name"
+      to: "iam_group_name"

@@ -57,7 +57,7 @@ module AWSEdges
                   end
                 end
 
-              end
+              end unless node[:"#{parent}"].nil?
             elsif to_node.include?('-')
               (parent, child) = to_node.split('-')
               node[:"#{parent}"].each do |i|
@@ -89,7 +89,7 @@ module AWSEdges
                   end
                 end
 
-              end
+              end unless node[:"#{parent}"].nil?
             else
               cmd_string += " edge " + '"' + 
               node[:"#{from_node}"].to_s + '","' + 

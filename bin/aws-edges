@@ -13,9 +13,6 @@ OptionParser.new do |opts|
   opts.on('-c','--config [CONFIG_FILE]', 'Config file') do |v|
     options[:config] = v
   end
-  opts.on('-f','--config-format [yaml|json]', 'Config file format (yaml or json)') do |v|
-    options[:fmt] = v
-  end
   opts.on('-a','--access-key-id [ACCESS_KEY_ID]', 'AWS Access Key ID') do |v|
     options[:access_key_id] = v
   end
@@ -79,7 +76,7 @@ elsif options[:shapes]
   exit 255
 end
 
-unless options[:access_key_id] and options[:secret_access_key] and options[:region] and options[:config] and options[:fmt]
+unless options[:access_key_id] and options[:secret_access_key] and options[:region] and options[:config] 
   puts "[ERROR] Missing required option, please run with '--help' for more info"
   exit 1
 end
@@ -92,14 +89,15 @@ AWS.config({
 
 # parse config
 config = AWSEdges::Config.new
-config_data = config.parse(options[:fmt],options[:config])
+config_data = config.parse(options[:config])
 
 aws_sources = config_data.delete('sources')
 aws_data = {
   :vpc => {}, :subnet => {}, :ec2 => {},
-  :rds => {}, :redshift => {}
+  :rds => {}, :redshift => {}, :iam => {}
 }
 # run aws clients to describe and retrieve data
+aws_data[:iam] = AWSEdges::IAM.new(AWS::IAM::Client.new).nodes if aws_sources.include?("iam")
 aws_data[:vpc] = AWSEdges::VPC.new(AWS::EC2::Client.new.describe_vpcs.data).nodes if aws_sources.include?("vpc")
 aws_data[:subnet] = AWSEdges::Subnet.new(AWS::EC2::Client.new.describe_subnets.data).nodes if aws_sources.include?("subnet")
 aws_data[:ec2] = AWSEdges::EC2.new(AWS::EC2::Client.new.describe_instances.data).nodes if aws_sources.include?("ec2")

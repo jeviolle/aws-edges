@@ -3,7 +3,7 @@ module AWSEdges
     @@valid_keys = ["name", "sources", "cluster", "label", "edges", 
                     "from", "from_shape", "from_color", 
                     "to", "to_shape", "to_color" ,"rotate", "save_as"]
-    @@valid_sources = ["VPC","EC2","RDS","Redshift","Subnet"]
+    @@valid_sources = ["VPC","EC2","RDS","Redshift","Subnet","IAM"]
     @@valid_prefixes = @@valid_sources
 
     def initialize
@@ -136,16 +136,17 @@ module AWSEdges
     ##
     # Attempt to parse the json/yaml config and run through
     # validation
-    def parse(file_type,config_file)
+    def parse(config_file)
       begin
-      case file_type
-      when /^yaml$/i
-        config = YAML.load(File.read(config_file))
-      when /^json$/i
-        config = JSON.parse(File.read(config_file))
-      else
-        msg_and_exit("Invalid file type specified: #{file_type}")
+        contents = File.read(config_file)
+      rescue Exception => e
+        msg_and_exit("Failed to read config: #{e.message}")
       end
+
+      begin
+        config = YAML.load(contents)
+      rescue Exception => e
+        config = JSON.parse(contents)
       rescue Exception => e
         msg_and_exit("Failed to parse config: #{e.message}")
       end
