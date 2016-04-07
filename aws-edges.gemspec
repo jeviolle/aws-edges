@@ -3,7 +3,7 @@ require 'aws-edges/version'
 
 Gem::Specification.new 'aws-edges', AWSEdges::VERSION do |s| 
   s.license = 'GPL-3.0'
-  s.date  = '2014-03-01'
+  s.date  = '2016-04-07'
   s.summary = 'Simple AWS architecture charts'
   s.description = 'AWS Edges is used to chart out your AWS environments'
   s.files = `git ls-files`.split("\n") - %w[]
